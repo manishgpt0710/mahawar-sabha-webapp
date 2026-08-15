@@ -1,0 +1,80 @@
+{
+  "project_name": "MahawarSabhaWebsite",
+  "version": "1.0.0",
+  "context": "Traditional community/cultural hybrid fullstack app with multi-location support (Rewari & Mathura), warm saffron, cream, and deep red accents.",
+  "typography": {
+    "headings": "Playfair Display, serif",
+    "body": "Inter, sans-serif",
+    "weights": ["300", "400", "600", "700", "900"],
+    "hierarchy": {
+      "H1": "text-4xl sm:text-5xl lg:text-6xl tracking-tight font-bold",
+      "H2": "text-2xl sm:text-3xl lg:text-4xl tracking-tight font-bold",
+      "H3": "text-xl sm:text-2xl font-semibold",
+      "H4": "text-lg sm:text-xl font-medium",
+      "body": "text-base leading-relaxed text-slate-700",
+      "labels": "text-xs uppercase tracking-[0.2em] font-semibold text-amber-800"
+    }
+  },
+  "colors": {
+    "archetype": "ORGANIC & EARTHY / TRADITIONAL CULTURAL",
+    "palette": {
+      "primary": "#D97706",
+      "primary_hover": "#B45309",
+      "saffron": "#F59E0B",
+      "cream": "#FEF3C7",
+      "cream_light": "#FFFBEB",
+      "deep_red": "#991B1B",
+      "deep_red_hover": "#7F1D1D",
+      "charcoal": "#1E293B",
+      "border_color": "rgba(217, 119, 6, 0.2)"
+    }
+  },
+  "visual_enhancers": {
+    "shadows": [
+      "shadow-[0_10px_30px_rgba(153,27,27,0.08)]",
+      "shadow-md"
+    ],
+    "borders": "1px solid rgba(217, 119, 6, 0.25)",
+    "borderRadius": "rounded-xl"
+  },
+  "component_path": "/app/frontend/src/components/",
+  "grids": {
+    "base": "grid-cols-1 md:grid-cols-3 lg:grid-cols-12",
+    "gap": "gap-8"
+  },
+  "layouts": {
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "header": "sticky top-0 z-50 backdrop-blur-xl bg-[#FFFBEB]/90 border-b border-amber-200/60"
+  },
+  "motion": {
+    "transition": "transition transform duration-200 ease-in-out",
+    "hover_lift": "hover:-translate-y-1 hover:shadow-lg"
+  },
+  "accessibility": {
+    "contrast_target": "WCAG AA (4.5:1 min for normal text)",
+    "aria_support": "Mandatory aria-labels and roles for location switchers, language toggle, and auth guards",
+    "test_attributes": "All interactive elements must include data-testid attributes"
+  },
+  "media": {
+    "responsive_images": "max-h-[80vh] object-cover rounded-xl"
+  },
+  "image_urls": [
+    {
+      "category": "cultural_heritage",
+      "url": "https://images.unsplash.com/photo-1615885108069-7d5bef9a7e22",
+      "description": "Traditional Indian cultural heritage and temple saffron hues"
+    },
+    {
+      "category": "temple_architecture",
+      "url": "https://images.unsplash.com/photo-1519955266818-0231b63402bc",
+      "description": "Historic temple architecture and congregation"
+    }
+  ],
+  "instructions_to_main_agent": [
+    "Ensure location-aware context resolves Mathura and Rewari correctly via subdomain or switcher dropdown in header.",
+    "Support English and Hindi i18n toggling across navigation and static content.",
+    "Provide full config-driven branding for Mahawar Sabha.",
+    "Include admin panel skeleton with entity management tabs and authentication route-guard skeleton.",
+    "Make sure every interactive element has a data-testid attribute for robust testing."
+  ]
+}

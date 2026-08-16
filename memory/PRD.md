@@ -1,28 +1,62 @@
-# Mahawar Sabha Website — Phase 1 PRD
+# Mahawar Sabha Website — PRD
 
-## Original problem statement
-Build a location-aware Mahawar Sabha website with Rewari and Mathura support, subdomain or route resolution, config-driven branding/content, responsive public layouts, Hindi/English i18n, SEO, analytics readiness, and authentication/admin skeletons. Deliver Phase 1 plus the first Mathura home/about pages.
+## Original Problem Statement
+Location-aware community website for Mahawar Sabha with multi-location support (Mathura, Rewari), config-driven branding/content, responsive base layout, i18n (Hindi/English), auth/admin skeleton, and Phase 1 skeleton with Mathura home/about.
 
-## Architecture decisions
-- Preserved the workspace React service runtime so the working preview and supervisor-managed frontend remain compatible; organized the implementation with location context/config patterns that can be migrated to Angular later if the service scaffold is replaced.
-- Location config is centralized in `frontend/src/data/siteConfig.js`; resolution checks hostname subdomain first, then route segment, then defaults to Mathura.
-- Backend exposes a small config-driven location API backed by in-memory dummy JSON-style data for Phase 1.
-- Authentication is intentionally a route-guard/admin shell only, with no demo accounts.
+## User personas
+- **Public visitor** — community member browsing Sabha content in Hindi/English.
+- **Community admin** — uploads/curates gallery images and community documents per location.
+- **Future member** — will register, view directory, events, donations (Phase 2).
+
+## Architecture (current)
+- **Frontend**: React 19 (CRA + CRACO), React Router, lucide-react icons, tailwind available.
+- **Backend**: Node.js Express + Mongoose (ES modules) on port 8001. `/api/*` prefix.
+- **Database**: MongoDB via `MONGO_URL` / `DB_NAME`.
+- **Storage**: Supabase Storage via `@supabase/supabase-js` — private bucket, backend-mediated download. Credentials deferred; guarded with `requireStorage` returning 503 when absent.
+- **Supervisor** runs Node backend, React frontend, and MongoDB.
+
+## Core requirements (static)
+- Multi-location routing (`/`, `/rewari`, `/rewari/about`, ...) with subdomain resolver + visible location switcher.
+- Config-driven branding & copy in `frontend/src/data/siteConfig.js`.
+- Responsive header/footer/nav with mobile menu.
+- Language toggle EN/HI.
+- Admin route guarded by token; UI-only Phase 1 shell was replaced with a functional admin media library.
+- Public location APIs.
+- Location-scoped media library (mathura/gallery, mathura/documents, rewari/gallery, rewari/documents).
 
 ## Implemented
-- Mathura homepage with cultural hero, community pillars, quote section, responsive footer, and About route.
-- Rewari placeholder homepage and location-aware About page.
-- Location switcher with Mathura/Rewari fallback routing.
-- Hindi/English toggle across navigation and key public copy.
-- Admin space skeleton with protected-space messaging.
-- Backend `/api/`, `/api/locations`, and `/api/locations/{slug}` endpoints.
-- SEO title, description, theme color, responsive styling, and analytics-ready page structure.
-- Verified with production build, JS/Python lint/compile, browser smoke tests, and focused Rewari link regression.
+- **2025-08-15** Phase 1 public skeleton (Mathura + Rewari), i18n toggle, SEO title updates, admin skeleton.
+- **2025-08-15** Rewari intro About-link fix (preserves location context).
+- **2026-01-16** Backend migration FastAPI → Node.js Express + Mongoose (all Phase 1 endpoints ported).
+- **2026-01-16** Supabase Storage integration (contract + UI):
+  - `POST /api/admin/media/upload` (multipart, admin-only, storage-guarded)
+  - `GET /api/admin/media?location=&category=` (admin-only list, `_id` scrubbed)
+  - `GET /api/admin/media/:id/download?token=&inline=` (admin token via query for `<img>`/`<a>`; backend-streamed; no Supabase URLs leaked)
+  - `DELETE /api/admin/media/:id` (soft-delete + storage remove)
+  - `GET /api/admin/media/status` (public health)
+  - `FileAsset` Mongo model with UUID `id`, `is_deleted`, timestamps, `location/category/is_deleted/createdAt` compound index.
+  - MIME allow-lists (images: jpg/png/webp/gif; docs: pdf/doc/docx). Size limits 10 MB image / 15 MB doc.
+- **2026-01-16** Admin Media Library UI (`/app/frontend/src/pages/AdminMedia.jsx`):
+  - Token sign-in with server-side validation (401 shown inline).
+  - Location & category tabs, drag-and-drop uploader with size hints, preview modal, copy URL, download, soft-delete, empty & "not configured" states.
+  - Every interactive element has a unique `data-testid`.
 
-## Prioritized backlog
-- P0: Replace admin shell with real authentication and route guards.
-- P1: Add Mathura team, history, achievements, events, gallery, contact, and member directory pages.
-- P1: Move location content from dummy data to persisted location-scoped entities and CRUD APIs.
-- P1: Add Supabase storage for images/documents and contact/registration/donation forms.
-- P2: Add richer analytics events and per-location SEO/schema metadata.
-- P2: Add custom domain/subdomain deployment mapping and Angular migration only if the runtime scaffold is intentionally replaced.
+## Verified
+- Testing agent iteration 2: **16/16 backend tests pass**, admin UI flows verified, public regression clean.
+- Report: `/app/test_reports/iteration_2.json`.
+- Credentials: `/app/memory/test_credentials.md`.
+
+## Backlog (P0 → P2)
+- **P0** Add live Supabase credentials → re-test upload/download/delete end-to-end and 415/413 branches.
+- **P1** Replace admin bearer token with proper auth (JWT or session) for production.
+- **P1** Public Gallery & Documents pages consuming the same storage (read-only, per-location).
+- **P1** Phase 2 pages: team, history, achievements, member directory, events, contact/forms.
+- **P1** Location-scoped CRUD for members/events; contact/registration/donation forms.
+- **P2** Analytics wiring (GA4 or Plausible).
+- **P2** Seed real Mathura content once storage is live.
+
+## Notes / Decisions
+- Backend runtime switched to Node.js at user's explicit request.
+- Original Angular request retained on backlog; React scaffold kept for velocity.
+- Supabase private bucket: `mahawar-sabha` (default; override via `SUPABASE_BUCKET`).
+- Download URLs embed the admin token via query string because `<img>` / `<a>` cannot set Authorization headers — flagged as a follow-up for signed URLs once creds are live.

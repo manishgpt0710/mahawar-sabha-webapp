@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Navigate, Route, Routes, useLocation, useNavigate 
 import { ArrowRight, ChevronDown, HeartHandshake, Menu, ShieldCheck, Sparkles, UsersRound, X } from "lucide-react";
 import "@/App.css";
 import { copy, locations, resolveLocation } from "@/data/siteConfig";
+import AdminMedia from "@/pages/AdminMedia";
 
 function Header({ location, lang, setLang }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -46,7 +47,7 @@ function Home({ location, lang }) {
 
 function About({ location, lang }) { const t = copy[lang]; return <main className="about-page"><section className="about-hero"><div className="section-label">02 — {t.about}</div><h1>{t.aboutTitle}</h1><p>{t.aboutBody}</p></section><section className="about-details"><div className="detail-image" style={{ backgroundImage: `url(${location.heroImage})` }} /><div className="detail-copy"><span className="eyebrow">Our foundation</span><h2>A sabha is more than a gathering.</h2><p>It is a promise to show up for one another — in celebration, in difficulty, and in the everyday moments that make a community feel like home.</p><div className="stats"><strong>{location.stats[0]}<small>{location.stats[1]}</small></strong><strong>02<small>Locations growing together</small></strong></div></div></section></main>; }
 
-function Admin() { return <main className="admin-page"><div className="admin-card"><ShieldCheck size={38} /><span className="eyebrow">Protected space</span><h1>Sabha administration</h1><p>This route is ready for authenticated community leaders. Content tools and member management will live here in the next phase.</p><button className="primary-button" data-testid="admin-auth-placeholder">Continue to sign in <ArrowRight size={17} /></button></div></main>; }
+function Admin() { return <AdminMedia />; }
 
 function AppShell() { const [location, setLocation] = useState(resolveLocation); const [lang, setLang] = useState("en"); const path = useLocation().pathname; useEffect(() => { setLocation(resolveLocation()); document.title = `${location.name} | Mahawar Sabha`; }, [path, location.name]); const page = useMemo(() => <Routes><Route path="/" element={<Home location={location} lang={lang} />} /><Route path="/:location" element={<Home location={location} lang={lang} />} /><Route path="/:location/about" element={<About location={location} lang={lang} />} /><Route path="/about" element={<About location={location} lang={lang} />} /><Route path="/admin" element={<Admin />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>, [location, lang]); return <div className="app-shell"><Header location={location} lang={lang} setLang={setLang} />{page}<Footer location={location} lang={lang} /></div>; }
 

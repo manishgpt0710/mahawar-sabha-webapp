@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Copy,
   Download,
@@ -296,6 +296,9 @@ export default function AdminMedia() {
           <p>Upload and organise gallery images and documents for each Sabha location.</p>
         </div>
         <div className="admin-media-actions">
+          <Link to="/admin/stories" className="ghost-button" data-testid="admin-goto-stories">
+            Journal
+          </Link>
           <button
             className="ghost-button"
             onClick={() => navigate("/")}

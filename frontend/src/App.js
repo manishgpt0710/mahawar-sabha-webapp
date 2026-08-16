@@ -4,6 +4,8 @@ import { ArrowRight, ChevronDown, HeartHandshake, Menu, ShieldCheck, Sparkles, U
 import "@/App.css";
 import { copy, locations, resolveLocation } from "@/data/siteConfig";
 import AdminMedia from "@/pages/AdminMedia";
+import AdminStories from "@/pages/AdminStories";
+import { StoriesList, StoryDetail } from "@/pages/Stories";
 
 function Header({ location, lang, setLang }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,7 +13,7 @@ function Header({ location, lang, setLang }) {
   const navigate = useNavigate();
   const t = copy[lang];
   const basePath = location.slug === "mathura" ? "" : `/${location.slug}`;
-  const nav = [[basePath || "/", t.nav[0]], [`${basePath}/about`, t.nav[1]], ["/#work", t.nav[2]], ["/#contact", t.nav[3]]];
+  const nav = [[basePath || "/", t.nav[0]], [`${basePath}/about`, t.nav[1]], ["/stories", t.journal], ["/#work", t.nav[2]], ["/#contact", t.nav[3]]];
   const selectLocation = (slug) => { setLocationOpen(false); navigate(slug === "mathura" ? "/" : `/${slug}`); };
   return <>
     <div className="topline"><span>जय महावर समाज</span><span>{t.locationNote} <strong>{location.city}</strong></span></div>
@@ -47,8 +49,6 @@ function Home({ location, lang }) {
 
 function About({ location, lang }) { const t = copy[lang]; return <main className="about-page"><section className="about-hero"><div className="section-label">02 — {t.about}</div><h1>{t.aboutTitle}</h1><p>{t.aboutBody}</p></section><section className="about-details"><div className="detail-image" style={{ backgroundImage: `url(${location.heroImage})` }} /><div className="detail-copy"><span className="eyebrow">Our foundation</span><h2>A sabha is more than a gathering.</h2><p>It is a promise to show up for one another — in celebration, in difficulty, and in the everyday moments that make a community feel like home.</p><div className="stats"><strong>{location.stats[0]}<small>{location.stats[1]}</small></strong><strong>02<small>Locations growing together</small></strong></div></div></section></main>; }
 
-function Admin() { return <AdminMedia />; }
-
-function AppShell() { const [location, setLocation] = useState(resolveLocation); const [lang, setLang] = useState("en"); const path = useLocation().pathname; useEffect(() => { setLocation(resolveLocation()); document.title = `${location.name} | Mahawar Sabha`; }, [path, location.name]); const page = useMemo(() => <Routes><Route path="/" element={<Home location={location} lang={lang} />} /><Route path="/:location" element={<Home location={location} lang={lang} />} /><Route path="/:location/about" element={<About location={location} lang={lang} />} /><Route path="/about" element={<About location={location} lang={lang} />} /><Route path="/admin" element={<Admin />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>, [location, lang]); return <div className="app-shell"><Header location={location} lang={lang} setLang={setLang} />{page}<Footer location={location} lang={lang} /></div>; }
+function AppShell() { const [location, setLocation] = useState(resolveLocation); const [lang, setLang] = useState("en"); const path = useLocation().pathname; useEffect(() => { setLocation(resolveLocation()); document.title = `${location.name} | Mahawar Sabha`; }, [path, location.name]); const page = useMemo(() => <Routes><Route path="/" element={<Home location={location} lang={lang} />} /><Route path="/stories" element={<StoriesList />} /><Route path="/stories/:slug" element={<StoryDetail />} /><Route path="/about" element={<About location={location} lang={lang} />} /><Route path="/admin" element={<AdminMedia />} /><Route path="/admin/media" element={<AdminMedia />} /><Route path="/admin/stories" element={<AdminStories />} /><Route path="/:location" element={<Home location={location} lang={lang} />} /><Route path="/:location/about" element={<About location={location} lang={lang} />} /><Route path="*" element={<Navigate to="/" replace />} /></Routes>, [location, lang]); return <div className="app-shell"><Header location={location} lang={lang} setLang={setLang} />{page}<Footer location={location} lang={lang} /></div>; }
 
 export default function App() { return <BrowserRouter><AppShell /></BrowserRouter>; }

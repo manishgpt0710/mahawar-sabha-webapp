@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import mongoose from 'mongoose';
 import locationRoutes from './src/routes/locations.js';
 import mediaRoutes from './src/routes/media.js';
+import storyRoutes from './src/routes/stories.js';
+import adminStoryRoutes from './src/routes/adminStories.js';
 
 const PORT = Number(process.env.PORT || 8001);
 const MONGO_URL = process.env.MONGO_URL;
@@ -44,6 +46,8 @@ async function start() {
   // Feature routers
   app.use('/api/locations', locationRoutes);
   app.use('/api/admin/media', mediaRoutes);
+  app.use('/api/stories', storyRoutes);
+  app.use('/api/admin/stories', adminStoryRoutes);
 
   // 404 for unknown /api routes
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));

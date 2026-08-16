@@ -60,3 +60,17 @@ Location-aware community website for Mahawar Sabha with multi-location support (
 - Original Angular request retained on backlog; React scaffold kept for velocity.
 - Supabase private bucket: `mahawar-sabha` (default; override via `SUPABASE_BUCKET`).
 - Download URLs embed the admin token via query string because `<img>` / `<a>` cannot set Authorization headers — flagged as a follow-up for signed URLs once creds are live.
+
+## 2026-01-16 — Community Journal / Heritage Stories
+
+- **Backend** (Node.js/Express + Mongoose):
+  - Model `Story` (uuid `id`, unique slug, location, title/subtitle/body/excerpt, author, tags, coverUrl / coverAssetId, published, publishedAt, is_deleted).
+  - Public routes: `GET /api/stories?location=`, `GET /api/stories/:slug`, `GET /api/stories/:slug/cover` (streams from Supabase when configured; 404 otherwise).
+  - Admin routes (bearer `ADMIN_TOKEN`): `GET /admin/stories`, `GET /admin/stories/:id`, `POST /admin/stories`, `PUT /admin/stories/:id`, `DELETE /admin/stories/:id` (soft-delete + unpublish).
+  - Slug auto-generation with uniqueness fallback; excerpt auto-computed on body change.
+- **Frontend**:
+  - Public `/stories` list and `/stories/:slug` detail with drop-cap paragraphs, cover fallback (Om symbol) and one-tap **Share on WhatsApp** (`wa.me/?text=...`) button + mini share button on each card.
+  - Admin `/admin/stories` manager with new/edit/delete, publish toggle, live status pill.
+  - Admin editor: title/subtitle/body (paragraph-per-blank-line), tags, author, cover upload via existing media pipeline, external URL fallback, storage-not-configured banner.
+  - New `Journal` link in main nav (EN/HI).
+- **Verified**: iteration 3 → 13/13 backend + full frontend flows via testing agent.

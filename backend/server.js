@@ -57,6 +57,9 @@ async function start() {
     if (err && err.code === 'LIMIT_FILE_SIZE') {
       return res.status(413).json({ code: 'FILE_TOO_LARGE', message: 'File exceeds size limit.' });
     }
+    if (err && typeof err.code === 'string' && err.code.startsWith('LIMIT_')) {
+      return res.status(400).json({ code: err.code, message: err.message || 'Upload rejected.' });
+    }
     console.error('[error]', err);
     const status = err.status || 500;
     res.status(status).json({

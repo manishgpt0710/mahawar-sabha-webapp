@@ -74,3 +74,12 @@ Location-aware community website for Mahawar Sabha with multi-location support (
   - Admin editor: title/subtitle/body (paragraph-per-blank-line), tags, author, cover upload via existing media pipeline, external URL fallback, storage-not-configured banner.
   - New `Journal` link in main nav (EN/HI).
 - **Verified**: iteration 3 → 13/13 backend + full frontend flows via testing agent.
+
+## 2026-01-16 — Supabase Storage went live
+
+- `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` added to `/app/backend/.env`.
+- Bucket `mahawar-sabha` created as Private on the user's Supabase project.
+- End-to-end verified via curl: upload (114 KB image) → list → backend-streamed download (200 image/jpeg, byte-exact) → 415 for text/plain into gallery → 204 delete.
+- Story cover pipeline verified: uploaded image to `mathura/gallery`, attached `coverAssetId` to the seed story, `GET /api/stories/:slug/cover` streams from Supabase publicly (200 image/jpeg, 197 KB).
+- Multer `parts` limit raised to 20 (was 3) after `LIMIT_PART_COUNT` on multipart with 2 fields + 1 file. Error handler now returns 400 with the specific `LIMIT_*` code instead of a generic 500.
+- Seed story cover cleared to showcase the elegant OM fallback design; admin can upload real covers via `/admin/stories` editor whenever they like.

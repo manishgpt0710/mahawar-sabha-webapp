@@ -31,7 +31,7 @@ const EXT_BY_TYPE = {
 // Use disk-agnostic memory storage; limits enforced at route level.
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: Math.max(MAX_IMAGE, MAX_DOC), files: 1, fields: 2, parts: 3 },
+  limits: { fileSize: Math.max(MAX_IMAGE, MAX_DOC), files: 1, fields: 10, parts: 20 },
 });
 
 function validScope(location, category) {

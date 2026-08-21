@@ -10,15 +10,16 @@ passes. All actual API traffic goes to the external Node.js backend
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-EXTERNAL_BACKEND = os.environ.get(
-    "EXTERNAL_BACKEND_URL",
-    "https://mahawar-sabha-webapp-production.up.railway.app",
-)
+load_dotenv(Path(__file__).parent / ".env")
+
+EXTERNAL_BACKEND = os.environ.get("EXTERNAL_BACKEND_URL", "")
 
 app = FastAPI(title="Mahawar Sabha (stub)")
 

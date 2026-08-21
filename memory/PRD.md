@@ -83,3 +83,13 @@ Location-aware community website for Mahawar Sabha with multi-location support (
 - Story cover pipeline verified: uploaded image to `mathura/gallery`, attached `coverAssetId` to the seed story, `GET /api/stories/:slug/cover` streams from Supabase publicly (200 image/jpeg, 197 KB).
 - Multer `parts` limit raised to 20 (was 3) after `LIMIT_PART_COUNT` on multipart with 2 fields + 1 file. Error handler now returns 400 with the specific `LIMIT_*` code instead of a generic 500.
 - Seed story cover cleared to showcase the elegant OM fallback design; admin can upload real covers via `/admin/stories` editor whenever they like.
+
+## 2026-01-16 (later) — Split-deployment architecture
+
+- Emergent deployment failed because the production container ships **Python only** — Node.js is not installed and Emergent doesn't support custom Dockerfiles or a Node runtime today (confirmed via support_agent).
+- User's decision: Node.js backend stays. To ship on Emergent while keeping Node:
+  - **Backend**: Node.js Express + MongoDB Atlas → hosted on Railway at `https://mahawar-sabha-webapp-production.up.railway.app` (all business logic, Supabase Storage integration, admin auth, media, journal).
+  - **Emergent side**: 20-line FastAPI health stub only (`server.py` — GET /health returning {ok:true}). No business logic. Required because Emergent's deployment probe targets port 8001 and frontend-only deployment isn't supported.
+  - **Frontend**: `REACT_APP_BACKEND_URL=https://mahawar-sabha-webapp-production.up.railway.app` — all XHRs go to Railway.
+- Verified in iteration 4: **25/25 backend tests pass** (stub + real Supabase upload/download/delete roundtrip on Railway) and full frontend Playwright flows pass; browser network trace confirmed traffic flows to Railway.
+- Added `.gitignore` at repo root to keep secrets/logs/build artifacts out of version control.
